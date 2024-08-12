@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GossipBae</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script async src="https://static.addtoany.com/menu/page.js"></script>
+</head>
+<body>
+    <header class="bg-white shadow-sm">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3">
+                <img src="GossipBae.png" alt="GossipBae" class="header-logo">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="mailto:contact@gossipbaenews.com">
+                                <i class="fas fa-envelope"></i> Contact Us
+                            </a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" id="search-form">
+                        <input class="form-control me-2" type="search" placeholder="Search news" aria-label="Search" id="search-input">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="filter-container">
+                    <div class="filter-buttons d-none d-md-flex">
+                        <!-- Filter buttons will be dynamically inserted here by JavaScript -->
+                    </div>
+                    <select class="form-select d-md-none" id="category-select">
+                        <!-- Category options will be dynamically inserted here by JavaScript -->
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="error-display" class="container mt-3" style="display: none;">
+        <div class="alert alert-danger" role="alert"></div>
+    </div>
+
+    <main class="container mt-4">
+        <div id="loading-spinner" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div id="main-content" class="row">
+            <div class="col-lg-8" id="news-container">
+                <h2 class="section-title">Entertainment News</h2>
+                
+                <!-- Latest Video Section -->
+                <div class="news-item featured-video">
+                    <h3 class="featured-title">Latest Video 🎬</h3>
+                    <div id="featured-video" class="ratio ratio-16x9">
+                        <!-- The latest YouTube video will be embedded here -->
+                    </div>
+                    <div class="news-item-footer">
+                        <small id="video-info">Loading video information...</small>
+                    </div>
+                </div>
+
+                <!-- News items will be dynamically inserted here -->
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar-section">
+                    <h3 class="section-title">Resources</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.youtube.com/@GossipBae">GOSSIP BAE</a></li>
+                        <li><a href="https://abcnews.go.com/">ABCNEWS</a></li>
+                        <li><a href="https://www.theatlantic.com/world/">ATLANTIC</a></li>
+                        <li><a href="https://www.axios.com/">AXIOS</a></li>
+                        <li><a href="https://www.bbc.co.uk/news">BBC</a></li>
+                        <li><a href="https://www.billboard.com/">BILLBOARD</a></li>
+                        <li><a href="https://www.boston.com/globe/">BOSTON GLOBE</a></li>
+                        <li><a href="https://www.bostonherald.com/news/">BOSTON HERALD</a></li>
+                        <li><a href="https://www.breitbart.com/">BREITBART</a></li>
+                        <li><a href="https://www.businessinsider.com/">BUSINESS INSIDER</a></li>
+                        <li><a href="https://www.cbsnews.com/">CBS NEWS</a></li>
+                        <li><a href="http://cbslocal.com/2015/08/31/daily-news-tips-from-cbs-local-sites/">CBS NEWS LOCAL</a></li>
+                        <li><a href="https://www.c-span.org/">C-SPAN</a></li>
+                        <li><a href="https://chicago.suntimes.com/">CHICAGO SUN-TIMES</a></li>
+                        <li><a href="https://www.cnbc.com/world/?region=world">CNBC</a></li>
+                        <li><a href="https://edition.cnn.com/">CNN</a></li>
+                        <li><a href="https://www.thedailybeast.com/">DAILY BEAST</a></li>
+                        <li><a href="https://dailycaller.com/">DAILY CALLER</a></li>
+                        <li><a href="https://deadline.com/">DEADLINE HOLLYWOOD</a></li>
+                        <li><a href="https://www.eonline.com/">E!</a></li>
+                        <li><a href="https://ew.com/">ENT WEEKLY</a></li>
+                        <li><a href="https://www.ft.com/">FINANCIAL TIMES</a></li>
+                        <li><a href="https://www.foxnews.com/">FOXNEWS</a></li>
+                        <li><a href="https://www.thefp.com/">FREE PRESS</a></li>
+                        <li><a href="https://thehill.com/news/">HILLJUST IN</a></li>
+                        <li><a href="https://www.hollywoodreporter.com/">H'WOOD REPORTER</a></li>
+                        <li><a href="https://www.huffpost.com/">HUFFINGTON POST</a></li>
+                        <li><a href="https://www.infowars.com/">INFOWARS</a></li>
+                        <li><a href="https://theintercept.com/">INTERCEPT</a></li>
+                        <li><a href="https://www.jpost.com/">JERUSALEM POST</a></li>
+                        <li><a href="https://www.dailynews.com/">LA DAILY NEWS</a></li>
+                        <li><a href="https://www.latimes.com/">LA TIMES</a></li>
+                        <li><a href="https://www.marketwatch.com/">MARKETWATCH</a></li>
+                        <li><a href="https://www.mediaite.com/">MEDIAITE</a></li>
+                        <li><a href="https://www.motherjones.com/">MOTHER JONES</a></li>
+                        <li><a href="https://www.thenation.com/">NATION</a></li>
+                        <li><a href="https://www.nationalreview.com/">NATIONAL REVIEW</a></li>
+                        <li><a href="https://www.nationalreview.com/">NBC NEWS</a></li>
+                        <li><a href="https://newrepublic.com/">NEW REPUBLIC</a></li>
+                        <li><a href="https://nymag.com/">NEW YORK</a></li>
+                        <li><a href="https://nypost.com/">NY POST</a></li>
+                        <li><a href="https://www.nytimes.com/">NY TIMESWIRE</a></li>
+                        <li><a href="https://www.newyorker.com/">NEW YORKER</a></li>
+                        <li><a href="https://www.newsmax.com/">NEWSMAX</a></li>
+                        <li><a href="https://www.newzit.com/">NEWZIT</a></li>
+                        <li><a href="https://people.com/">PEOPLE</a></li>
+                        <li><a href="https://www.politico.com/">POLITICO</a></li>
+                        <li><a href="https://www.rawstory.com/">RAW STORY</a></li>
+                        <li><a href="https://www.realclearpolitics.com/">REAL CLEAR POLITICS</a></li>
+                        <li><a href="https://reason.org/">REASON</a></li>
+                        <li><a href="https://rollcall.com/">ROLL CALL</a></li>
+                        <li><a href="https://www.rollingstone.com/">ROLLING STONE</a></li>
+                        <li><a href="https://www.salon.com/">SALON</a></li>
+                        <li><a href="http://www.sfchronicle.com/">SAN FRAN CHRON</a></li>
+                        <li><a href="https://www.semafor.com/">SEMAFOR</a></li>
+                        <li><a href="https://news.sky.com/">SKY NEWSLIVE...</a></li>
+                        <li><a href="https://www.tmz.com/">TMZ</a></li>
+                        <li><a href="https://www.dailymail.co.uk/home/index.html">[UK] DAILY MAILFEED</a></li>
+                        <li><a href="https://www.mirror.co.uk/">[UK] DAILY MIRROR</a></li>
+                        <li><a href="https://www.express.co.uk/">[UK] EXPRESS</a></li>
+                        <li><a href="https://www.theguardian.com/uk?INTCMP=CE_UK">[UK] GUARDIAN</a></li>
+                        <li><a href="https://www.independent.co.uk/">[UK] INDEPENDENT</a></li>
+                        <li><a href="https://metro.co.uk/">[UK] METRO</a></li>
+                        <li><a href="https://www.thesun.co.uk/">[UK] SUN</a></li>
+                        <li><a href="https://www.usnews.com/">US NEWS</a></li>
+                        <li><a href="https://eu.usatoday.com/">USA TODAY</a></li>
+                        <li><a href="https://www.vanityfair.com/">VANITY FAIR</a></li>
+                        <li><a href="https://variety.com/">VARIETY</a></li>
+                        <li><a href="https://www.wsj.com/">WALL STREET JOURNAL</a></li>
+                        <li><a href="https://www.washingtonexaminer.com/">WASH EXAMINER</a></li>
+                        <li><a href="https://www.washingtonpost.com/">WASH POSTLATEST</a></li>
+                        <li><a href="https://www.washingtontimes.com/">WASH TIMES</a></li>
+                        <li><a href="https://www.thewrap.com/">WRAP</a></li>
+                        <li><a href="https://www.zerohedge.com/">ZEROHEDGE</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white mt-4">
+        <div class="container py-3">
+            <p>&copy; 2024 EntertainMint. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
