@@ -37,8 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         categorySelect.appendChild(option);
     });
 
-    fetchLatestVideo();
-
     // Event listener for buttons
     filterButtonsContainer.addEventListener('click', function(event) {
         if (event.target.classList.contains('btn-filter')) {
@@ -144,17 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!loadMore) {
             newsContainer.innerHTML = `
                 <h2 class="section-title">${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)} News</h2>
-                <div class="news-item featured-video">
-                    <h3 class="featured-title">Latest Video 🎬</h3>
-                    <div id="featured-video" class="ratio ratio-16x9">
-                        <!-- YouTube video will be embedded here -->
-                    </div>
-                    <div class="news-item-footer">
-                        <small>Loading video information...</small>
-                    </div>
-                </div>
             `;
-            fetchLatestVideo();
         }
 
         const existingArticles = new Set(Array.from(newsContainer.querySelectorAll('.news-item')).map(item => item.dataset.id));
@@ -313,32 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchNews(currentCategory);
     addEventListeners();
 });
-
-async function fetchLatestVideo() {
-    try {
-        const response = await axios.get('http://localhost:3000/api/latest-video');
-        const videoData = response.data;
-
-        const featuredVideoContainer = document.getElementById('featured-video');
-        featuredVideoContainer.innerHTML = `
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoData.id}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        `;
-        
-        const featuredTitle = document.querySelector('.featured-title');
-        if (featuredTitle) {
-            featuredTitle.textContent = `Latest Video: ${videoData.title}`;
-        }
-        
-        const featuredFooter = document.querySelector('.featured-video .news-item-footer small');
-        if (featuredFooter) {
-            featuredFooter.textContent = `Published on ${videoData.publishedAt}`;
-        }
-    } catch (error) {
-        console.error('Error fetching latest video:', error);
-        const featuredVideoContainer = document.getElementById('featured-video');
-        featuredVideoContainer.innerHTML = '<p>Unable to load latest video. Please try again later.</p>';
-    }
-}
 
 function decodeHTMLEntities(text) {
     const textArea = document.createElement('textarea');
