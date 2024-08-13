@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    
     // Event listener for select
     categorySelect.addEventListener('change', function() {
         const filter = this.value;
@@ -317,3 +318,62 @@ document.getElementById('cta-button').addEventListener('click', function() {
         }
     });
 });
+
+function trackScrollDepth() {
+    let scrollDepths = [25, 50, 75, 100];
+    let sentDepths = new Set();
+
+    window.addEventListener('scroll', function() {
+        const scrollPercentage = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+        
+        scrollDepths.forEach(depth => {
+            if (scrollPercentage >= depth && !sentDepths.has(depth)) {
+                gtag('event', 'scroll_depth', {
+                    'event_category': 'Engagement',
+                    'event_label': `${depth}%`,
+                    'value': depth
+                });
+                sentDepths.add(depth);
+            }
+        });
+    });
+}
+
+implementInfiniteScroll();
+fetchNews(currentCategory);
+addEventListeners();
+trackScrollDepth();
+
+function decodeHTMLEntities(text) {
+const textArea = document.createElement('textarea');
+textArea.innerHTML = text;
+return textArea.value;
+}
+
+document.getElementById('cta-button').addEventListener('click', function() {
+confetti({
+    particleCount: 150,
+    spread: 70,
+    origin: {
+        y: 0.6
+    }
+});
+
+// Track CTA button click
+gtag('event', 'cta_click', {
+    'event_category': 'Engagement',
+    'event_label': 'CTA Button'
+});
+});
+
+// Add this function to handle initial page view tracking
+function trackInitialPageView() {
+gtag('event', 'page_view', {
+    'page_title': document.title,
+    'page_location': window.location.href,
+    'page_path': window.location.pathname
+});
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', trackInitialPageView);
