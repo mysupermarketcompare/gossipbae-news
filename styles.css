@@ -458,3 +458,8 @@ footer {
     white-space: nowrap;
     border: 0;
 }
+@media (max-width: 767px) {
+    .sidebar-section {
+        display: none;
+    }
+}

@@ -1,6 +1,6 @@
 let currentPage = 1;
 let currentCategory = 'entertainment';
-const articlesPerPage = 10;
+const articlesPerPage = 20;
 const newsCache = {};
 const MAX_RETRIES = 3;
 const RATE_LIMIT = 100;
@@ -8,6 +8,28 @@ const RATE_LIMIT = 100;
 let requestCount = 0;
 let lastRequestTime = 0;
 let isLoading = false;
+
+function getRelativeTime(dateString) {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffInSeconds = Math.floor((now - past) / 1000);
+
+    if (diffInSeconds < 60) {
+        return 'Just now';
+    } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else if (diffInSeconds < 2592000) {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    } else {
+        const months = Math.floor(diffInSeconds / 2592000);
+        return `${months} month${months > 1 ? 's' : ''} ago`;
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     const filterButtonsContainer = document.querySelector('.filter-buttons');
@@ -52,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    
     // Event listener for select
     categorySelect.addEventListener('change', function() {
         const filter = this.value;
@@ -161,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>${article.description}</p>
             <div class="news-item-footer">
                 <div>
-                    <small>Posted ${new Date(article.publishedAt).toLocaleString()}</small>
+                    <small>Posted ${getRelativeTime(article.publishedAt)}</small>
                     <span class="news-source">${article.source.name}</span>
                 </div>
                 <div class="news-item-actions">
@@ -263,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p>${article.description}</p>
                         <div class="news-item-footer">
                             <div>
-                                <small>Posted ${new Date(article.publishedAt).toLocaleString()}</small>
+                                <small>Posted ${getRelativeTime(article.publishedAt)}</small>
                                 <span class="news-source">${article.source.name}</span>
                             </div>
                             <div class="news-item-actions">
@@ -317,6 +338,12 @@ document.getElementById('cta-button').addEventListener('click', function() {
             y: 0.6
         }
     });
+
+    // Track CTA button click
+    gtag('event', 'cta_click', {
+        'event_category': 'Engagement',
+        'event_label': 'CTA Button'
+    });
 });
 
 function trackScrollDepth() {
@@ -339,41 +366,20 @@ function trackScrollDepth() {
     });
 }
 
-implementInfiniteScroll();
-fetchNews(currentCategory);
-addEventListeners();
-trackScrollDepth();
-
-function decodeHTMLEntities(text) {
-const textArea = document.createElement('textarea');
-textArea.innerHTML = text;
-return textArea.value;
-}
-
-document.getElementById('cta-button').addEventListener('click', function() {
-confetti({
-    particleCount: 150,
-    spread: 70,
-    origin: {
-        y: 0.6
-    }
-});
-
-// Track CTA button click
-gtag('event', 'cta_click', {
-    'event_category': 'Engagement',
-    'event_label': 'CTA Button'
-});
-});
-
 // Add this function to handle initial page view tracking
 function trackInitialPageView() {
-gtag('event', 'page_view', {
-    'page_title': document.title,
-    'page_location': window.location.href,
-    'page_path': window.location.pathname
-});
+    gtag('event', 'page_view', {
+        'page_title': document.title,
+        'page_location': window.location.href,
+        'page_path': window.location.pathname
+    });
 }
 
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', trackInitialPageView);
+// Call these functions when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    implementInfiniteScroll();
+    fetchNews(currentCategory);
+    addEventListeners();
+    trackScrollDepth();
+    trackInitialPageView();
+});
