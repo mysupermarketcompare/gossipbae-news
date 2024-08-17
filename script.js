@@ -1,6 +1,6 @@
 let currentPage = 1;
 let currentCategory = 'entertainment';
-const articlesPerPage = 20;
+const articlesPerPage = 50;
 const newsCache = {};
 const MAX_RETRIES = 3;
 const RATE_LIMIT = 100;
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (requestCount >= RATE_LIMIT && Date.now() - lastRequestTime < 60 * 60 * 1000) {
                 throw new Error('Rate limit exceeded. Please try again later.');
             }
-
+    
             let articles;
             const cacheKey = `${category}_${currentPage}`;
             if (newsCache[cacheKey] && Date.now() - newsCache[cacheKey].timestamp < 5 * 60 * 1000) {
@@ -135,14 +135,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 articles = await window.fetchCategoryNews(category, currentPage, articlesPerPage);
                 newsCache[cacheKey] = { data: articles, timestamp: Date.now() };
             }
-
+    
             console.log('Fetched articles:', articles); // Debug log
-
+    
             if (articles && articles.length > 0) {
                 displayNews(articles, loadMore);
                 currentPage++;
                 requestCount++;
                 lastRequestTime = Date.now();
+    
+                // Pre-fetch next page
+                const nextPageCacheKey = `${category}_${currentPage}`;
+                if (!newsCache[nextPageCacheKey]) {
+                    window.fetchCategoryNews(category, currentPage, articlesPerPage).then(nextArticles => {
+                        newsCache[nextPageCacheKey] = { data: nextArticles, timestamp: Date.now() };
+                    });
+                }
             } else {
                 console.log('No articles found'); // Debug log
                 if (!loadMore) {
@@ -166,46 +174,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="section-title">${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)} News</h2>
             `;
         }
-
+    
         const existingArticles = new Set(Array.from(newsContainer.querySelectorAll('.news-item')).map(item => item.dataset.id));
-
+        const fragment = document.createDocumentFragment();
+    
         articles.forEach(article => {
             console.log('Processing article:', article); // Debug log
             if (!existingArticles.has(article.id)) {
-               const newsItem = `
-    <a href="${article.url}" class="news-item" data-id="${article.id}" target="_blank" rel="noopener noreferrer">
-        <div class="news-item-image">
-            <img src="${article.image || 'https://via.placeholder.com/400x300'}" alt="${article.title}">
-        </div>
-        <div class="news-item-content">
-            <h3>${article.title}</h3>
-            <p>${article.description}</p>
-            <div class="news-item-footer">
-                <div>
-                    <small>Posted ${getRelativeTime(article.publishedAt)}</small>
-                    <span class="news-source">${article.source.name}</span>
-                </div>
-                <div class="news-item-actions">
-                    <div class="social-share-buttons">
-                         <button class="btn share-twitter">
-                            <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                            </svg>
-                         </button>
-                         <button class="btn share-facebook">
-                            <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                         </button>
+                const newsItem = document.createElement('a');
+                newsItem.href = article.url;
+                newsItem.className = 'news-item';
+                newsItem.dataset.id = article.id;
+                newsItem.target = '_blank';
+                newsItem.rel = 'noopener noreferrer';
+                newsItem.innerHTML = `
+                    <div class="news-item-image">
+                        <img src="${article.image || 'https://via.placeholder.com/400x300'}" alt="${article.title}">
                     </div>
-                </div>
-            </div>
-        </div>
-    </a>
-`;
-                newsContainer.innerHTML += newsItem;
+                    <div class="news-item-content">
+                        <h3>${article.title}</h3>
+                        <div class="news-item-footer">
+                            <div>
+                                <small>Posted ${getRelativeTime(article.publishedAt)}</small>
+                                <span class="news-source">${article.source.name}</span>
+                            </div>
+                            <div class="news-item-actions">
+                                <div class="social-share-buttons">
+                                    <button class="btn share-twitter">
+                                        <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="btn share-facebook">
+                                        <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                fragment.appendChild(newsItem);
             }
         });
+    
+        newsContainer.appendChild(fragment);
     }
 
     function addEventListeners() {
@@ -275,47 +289,52 @@ document.addEventListener('DOMContentLoaded', function() {
         
         articles.forEach(article => {
             const newsItem = `
-                <a href="${article.url}" class="news-item" data-id="${article.id || Date.now()}" target="_blank" rel="noopener noreferrer">
-                    <div class="news-item-image">
-                        <img src="${article.image || 'https://via.placeholder.com/400x300'}" alt="${article.title}">
+    <a href="${article.url}" class="news-item" data-id="${article.id || Date.now()}" target="_blank" rel="noopener noreferrer">
+        <div class="news-item-image">
+            <img src="${article.image || 'https://via.placeholder.com/400x300'}" alt="${article.title}">
+        </div>
+        <div class="news-item-content">
+            <h3>${article.title}</h3>
+            <div class="news-item-footer">
+                <div>
+                    <small>Posted ${getRelativeTime(article.publishedAt)}</small>
+                    <span class="news-source">${article.source.name}</span>
+                </div>
+                <div class="news-item-actions">
+                    <div class="social-share-buttons">
+                        <button class="btn share-twitter">
+                            <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </button>
+                        <button class="btn share-facebook">
+                            <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="news-item-content">
-                        <h3>${article.title}</h3>
-                        <p>${article.description}</p>
-                        <div class="news-item-footer">
-                            <div>
-                                <small>Posted ${getRelativeTime(article.publishedAt)}</small>
-                                <span class="news-source">${article.source.name}</span>
-                            </div>
-                            <div class="news-item-actions">
-                                <div class="social-share-buttons">
-                                    <button class="btn share-twitter">
-                                        <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                                        </svg>
-                                    </button>
-                                    <button class="btn share-facebook">
-                                        <svg class="share-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `;
+                </div>
+            </div>
+        </div>
+    </a>
+`;
             newsContainer.innerHTML += newsItem;
         });
     }
 
     function implementInfiniteScroll() {
+        let scrollTimeout;
         window.addEventListener('scroll', () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-                if (!isLoading) {
-                    fetchNews(currentCategory, true);
-                }
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
             }
+            scrollTimeout = setTimeout(() => {
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+                    if (!isLoading) {
+                        fetchNews(currentCategory, true);
+                    }
+                }
+            }, 100);
         });
     }
 

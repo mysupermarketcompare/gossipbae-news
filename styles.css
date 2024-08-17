@@ -17,12 +17,13 @@ body {
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     overflow: hidden;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    display: block;
+    display: flex;
     text-decoration: none;
     color: var(--text-color);
+    height: 100px;
 }
 
 .news-item:hover {
@@ -31,9 +32,8 @@ body {
 }
 
 .news-item-image {
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    width: 30%;
+    height: 100px;
     position: relative;
     overflow: hidden;
 }
@@ -53,49 +53,49 @@ body {
 }
 
 .news-item-content {
-    padding: 20px;
+    padding: 10px;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .news-item h3 {
-    margin-top: 0;
-    font-size: 1.4rem;
+    margin: 0;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-.news-item p {
-    color: var(--dark-gray);
-    font-size: 1rem;
-    margin-bottom: 15px;
+    line-height: 1.2;
+    max-height: 2.4em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .news-item-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 15px;
-    border-top: 1px solid var(--light-gray);
-    margin-top: auto;
+    font-size: 0.75rem;
+    margin-top: 5px;
 }
 
 .news-item-footer small {
     color: var(--dark-gray);
-    font-size: 0.85rem;
 }
 
 .news-source {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: var(--primary-color);
-    background-color: rgba(224, 247, 250, 0.8); /* Pale light blue background */
-    border: 2px solid var(--primary-color); /* Blue border */
-    padding: 5px 6px; /* Adjust padding for pill shape */
-    border-radius: 10px; /* Make it pill-shaped */
-    display: inline-block; /* Ensure the pill shape fits the content */
+    background-color: rgba(224, 247, 250, 0.8);
+    border: 1px solid var(--primary-color);
+    padding: 2px 4px;
+    border-radius: 8px;
+    display: inline-block;
     margin-left: 5px;
 }
-
 
 .news-item-actions {
     display: flex;
@@ -113,37 +113,37 @@ body {
     padding: 0;
     margin-left: 8px;
     cursor: pointer;
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .share-icon {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     display: block;
 }
 
 /* Style for Twitter icon */
 .social-share-buttons .share-twitter .share-icon path {
-    fill: #00549D; /* Twitter blue */
+    fill: #00549D;
     transition: fill 0.3s ease;
 }
 
 .social-share-buttons .share-twitter:hover .share-icon path {
-    fill: #0d8dec; /* Slightly darker blue on hover */
+    fill: #0d8dec;
 }
 
 /* Style for Facebook icon */
 .social-share-buttons .share-facebook .share-icon path {
-    fill: #1877F2; /* Facebook blue */
+    fill: #1877F2;
     transition: fill 0.3s ease;
 }
 
 .social-share-buttons .share-facebook:hover .share-icon path {
-    fill: #145dbb; /* Slightly darker blue on hover */
+    fill: #145dbb;
 }
 
 .container {
@@ -204,7 +204,7 @@ body {
 
 /* Navbar styles */
 .navbar {
-    background-color: rgba(0, 0, 0, 0.9); /* Black with 90% opacity */
+    background-color: rgba(0, 0, 0, 0.9);
     min-height: 55px;
     width: 100%;
     padding: 0.5rem 5rem;
@@ -226,7 +226,7 @@ body {
 }
 
 .nav-item .nav-link {
-    color: #ffffff !important; /* White text color */
+    color: #ffffff !important;
     font-weight: 500;
     transition: color 0.3s ease;
     padding: 0.5rem 1rem;
@@ -269,7 +269,6 @@ body {
     margin-right: 15px;
 }
 
-
 @media (max-width: 991px) {
     .navbar {
         padding: 2.5rem;
@@ -289,18 +288,17 @@ body {
 
     .navbar-toggler {
         margin-right: 0;
-        border: none; /* Remove the border */
-        padding: 0.25rem 0; /* Adjust padding as needed */
+        border: none;
+        padding: 0.25rem 0;
     }
     
     .navbar-toggler:focus {
-        outline: none; /* Remove the focus outline */
-        box-shadow: none; /* Remove any box shadow */
+        outline: none;
+        box-shadow: none;
     }
     
     .navbar-toggler-icon {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        /* This SVG creates a white hamburger icon */
     }
     
     .navbar-collapse {
@@ -343,19 +341,18 @@ header .container {
 }
 
 .btn-outline-primary {
-    color: #ffffff; /* White text */
-    border-color: #ffffff; /* White border */
-    background-color: transparent; /* Transparent background */
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    color: #ffffff;
+    border-color: #ffffff;
+    background-color: transparent;
+    transition: all 0.3s ease;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
-    color: #000000; /* Black text on hover/focus */
-    background-color: #ffffff; /* White background on hover/focus */
-    border-color: #ffffff; /* White border on hover/focus */
+    color: #000000;
+    background-color: #ffffff;
+    border-color: #ffffff;
 }
-
 
 /* Filter Container Styles */
 .filter-container {
@@ -408,45 +405,6 @@ footer {
     border-top: 1px solid var(--light-gray);
 }
 
-/* Media Queries */
-@media (min-width: 768px) {
-    .news-item {
-        display: flex;
-        align-items: stretch;
-    }
-
-    .news-item-image {
-        width: 30%;
-        height: auto;
-        padding-bottom: 0;
-    }
-
-    .news-item-content {
-        width: 70%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .news-item-footer {
-        flex-wrap: nowrap;
-    }
-
-    .news-item-actions {
-        margin-top: 0;
-        margin-left: 10px;
-    }
-}
-
-@media (max-width: 767px) {
-    .news-item-image {
-        height: 200px;
-    }
-
-    .btn-filter {
-        margin: 5px 0;
-    }
-}
-
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -458,6 +416,7 @@ footer {
     white-space: nowrap;
     border: 0;
 }
+
 @media (max-width: 767px) {
     .sidebar-section {
         display: none;
